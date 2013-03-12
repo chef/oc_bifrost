@@ -16,9 +16,9 @@ validate_request(Req, State) ->
 auth_info('GET') ->
     any.
 
-to_json(Req, #base_state{target_authz_id = AuthzId, request_type = RequestType} = State) ->
+to_json(Req, #base_state{target_authz_id = AuthzId, target_type = TargetType} = State) ->
     try
-        Ejson = heimdall_acl:make_ejson_acl(RequestType, AuthzId),
+        Ejson = heimdall_acl:make_ejson_acl(TargetType, AuthzId),
         {heimdall_wm_util:encode(Ejson), Req, State}
     catch
         throw:{db_error, Error} ->

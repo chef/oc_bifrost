@@ -17,7 +17,7 @@
 init(Resource, Config) ->
     State = #base_state{module = Resource, reqid = new_request_id()},
     State0 = State#base_state{superuser_id = ?gv(superuser_id, Config),
-                              request_type = ?gv(request_type, Config),
+                              target_type = ?gv(target_type, Config),
                               member_type = ?gv(member_type, Config)},
     {ok, State0}.
 
@@ -59,7 +59,7 @@ validate_requestor(Req, State) ->
             heimdall_wm_error:set_malformed_request(Req, State, {bad_requestor, Id})
     end.
 
-forbidden(Req, #base_state{module = Module, target_authz_id = Id, request_type = Type,
+forbidden(Req, #base_state{module = Module, target_authz_id = Id, target_type = Type,
                            requestor_id = RequestorId} = State) ->
     case Module:auth_info(wrq:method(Req)) of
         ignore ->

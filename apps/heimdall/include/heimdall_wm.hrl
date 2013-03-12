@@ -22,11 +22,8 @@
           %% /<type>/<id> this is <id>
           target_authz_id :: auth_id(),
 
-          %% What is the superuser ID?
-          superuser_id :: auth_id(),
-
           %% What kind of resource are we talking about here?
-          request_type :: auth_type(),
+          target_type :: auth_type(),
 
           %% What type of ACE request is this?
           action :: permission(),
@@ -40,6 +37,9 @@
 
           %% Who's asking?
           requestor_id :: auth_id() | superuser,
+
+          %% What is the superuser ID?
+          superuser_id :: auth_id(),
 
           %% Which module is handling this request?
           module :: atom(),
