@@ -29,7 +29,7 @@ get_members(Type, AuthzId) ->
             List
     end.
 
-to_json(Req, #base_state{authz_id = AuthzId, request_type = RequestType} = State) ->
+to_json(Req, #base_state{target_authz_id = AuthzId, request_type = RequestType} = State) ->
     case RequestType of
         group ->
             try
@@ -45,7 +45,7 @@ to_json(Req, #base_state{authz_id = AuthzId, request_type = RequestType} = State
             {<<"{}">>, Req, State}
     end.
 
-delete_resource(Req, #base_state{authz_id = AuthzId,
+delete_resource(Req, #base_state{target_authz_id = AuthzId,
                                  request_type = Type} = State) ->
     case heimdall_db:delete(Type, AuthzId) of
         ok ->

@@ -20,7 +20,7 @@
 
           %% Who are we working with?  This is the object in question, i.e., for
           %% /<type>/<id> this is <id>
-          authz_id :: auth_id(),
+          target_authz_id :: auth_id(),
 
           %% What is the superuser ID?
           superuser_id :: auth_id(),

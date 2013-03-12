@@ -21,7 +21,7 @@ auth_info(Verb) when Verb =:= 'PUT';
                      Verb =:= 'DELETE' ->
     grant.
 
-to_json(Req, #base_state{authz_id = AuthzId, request_type = RequestType,
+to_json(Req, #base_state{target_authz_id = AuthzId, request_type = RequestType,
                          action = Action} = State) ->
     try
         Ejson = heimdall_acl:make_ejson_action(Action, RequestType, AuthzId),
@@ -31,7 +31,7 @@ to_json(Req, #base_state{authz_id = AuthzId, request_type = RequestType,
             heimdall_wm_error:set_db_exception(Req, State, Error)
     end.    
 
-from_json(Req, #base_state{authz_id = AuthzId, request_type = RequestType,
+from_json(Req, #base_state{target_authz_id = AuthzId, request_type = RequestType,
                            action = Action} = State) ->
     try
         Body = wrq:req_body(Req),
@@ -53,7 +53,7 @@ from_json(Req, #base_state{authz_id = AuthzId, request_type = RequestType,
 
 
 
-delete_resource(Req, #base_state{authz_id = AuthzId, request_type = RequestType,
+delete_resource(Req, #base_state{target_authz_id = AuthzId, request_type = RequestType,
                                  action = Action} = State) ->
     try
         heimdall_acl:clear_access(RequestType, AuthzId, Action),

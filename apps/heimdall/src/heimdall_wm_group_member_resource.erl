@@ -18,7 +18,7 @@ auth_info(Verb) when Verb =:= 'PUT';
                      Verb =:= 'DELETE' ->
     update.
 
-from_json(Req, #base_state{authz_id = AuthzId, member_type = MemberType,
+from_json(Req, #base_state{target_authz_id = AuthzId, member_type = MemberType,
                            member_id = MemberId} = State) ->
     case heimdall_db:add_to_group(MemberType, MemberId, AuthzId) of
         ok ->
@@ -36,7 +36,7 @@ from_json(Req, #base_state{authz_id = AuthzId, member_type = MemberType,
             end
     end.
 
-delete_resource(Req, #base_state{authz_id = AuthzId, member_type = MemberType,
+delete_resource(Req, #base_state{target_authz_id = AuthzId, member_type = MemberType,
                                  member_id = MemberId} = State) ->
     case heimdall_db:remove_from_group(MemberType, MemberId, AuthzId) of
         ok ->

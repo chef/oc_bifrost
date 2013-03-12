@@ -42,7 +42,7 @@ malformed_request(Req, #base_state{module = Module} = State) ->
                      list_to_existing_atom(Permission)
              end,
     MemberId = wrq:path_info(member_id, Req),
-    Module:validate_request(Req, State#base_state{authz_id = Id, action = Action,
+    Module:validate_request(Req, State#base_state{target_authz_id = Id, action = Action,
                                                   member_id = MemberId}).
 
 validate_requestor(Req, State) ->
@@ -59,7 +59,7 @@ validate_requestor(Req, State) ->
             heimdall_wm_error:set_malformed_request(Req, State, {bad_requestor, Id})
     end.
 
-forbidden(Req, #base_state{module = Module, authz_id = Id, request_type = Type,
+forbidden(Req, #base_state{module = Module, target_authz_id = Id, request_type = Type,
                            requestor_id = RequestorId} = State) ->
     case Module:auth_info(wrq:method(Req)) of
         ignore ->
@@ -89,7 +89,7 @@ create_path(Req, State) ->
     {AuthzId,
      %% Add new AuthzID to notes for output in the request logger
      wrq:add_note(created_authz_id, AuthzId, Req),
-     State#base_state{authz_id = AuthzId}}.
+     State#base_state{target_authz_id = AuthzId}}.
 
 content_types_accepted(Req, State) ->
     {[{"application/json", from_json}], Req, State}.

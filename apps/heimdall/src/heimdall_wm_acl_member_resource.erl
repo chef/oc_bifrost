@@ -16,7 +16,7 @@ validate_request(Req, State) ->
 auth_info('GET') ->
     any.
 
-to_json(Req, #base_state{authz_id = AuthzId, request_type = RequestType,
+to_json(Req, #base_state{target_authz_id = AuthzId, request_type = RequestType,
                          action = Action, member_id = MemberId} = State) ->
     try
         case heimdall_acl:check_access(RequestType, AuthzId, MemberId, Action) of
