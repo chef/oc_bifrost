@@ -6,6 +6,8 @@ HEIMDALL_FORWARD_PORT    = 15959
 HEIMDALL_DB_PORT         =  5432
 HEIMDALL_FORWARD_DB_PORT = 15432
 
+OMNIBUS_CHEF_VERSION = "11.4.0"
+
 Vagrant::Config.run do |config|
   # All Vagrant configuration is done here. The most common configuration
   # options are documented and commented below. For a complete reference,
@@ -62,6 +64,19 @@ Vagrant::Config.run do |config|
   config.ssh.timeout   = 120
 
   config.ssh.forward_agent = true
+
+  # Run two separate provision steps.  This first one ensures that we
+  # have Chef 11 from Omnibus on the box.  The second provison step is
+  # the "real" one, which can now use Chef 11.
+  config.vm.provision :shell, :inline => <<-INSTALL_OMNIBUS
+  if [ ! -d "/opt/chef" ] ||
+     [ ! $(chef-solo --v | awk "{print \\$2}") = "#{OMNIBUS_CHEF_VERSION}" ]
+  then
+    wget -qO- https://www.opscode.com/chef/install.sh | sudo bash -s -- -v #{OMNIBUS_CHEF_VERSION}
+  else
+    echo "Chef #{OMNIBUS_CHEF_VERSION} already installed...skipping installation."
+  fi
+  INSTALL_OMNIBUS
 
   config.vm.provision :chef_solo do |chef|
     chef.json = {
