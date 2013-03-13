@@ -23,14 +23,14 @@
           target_authz_id :: auth_id(),
 
           %% What kind of resource are we talking about here?
-          target_type :: auth_type(),
+          target_type :: entity_type(),
 
           %% What type of ACE request is this?
           action :: permission(),
 
           %% What member type are we checking for?  This will always be an actor or
           %% a group
-          member_type :: auth_type(),
+          member_type :: entity_type(),
 
           %% What's the ID of the member
           member_id :: auth_id(),
