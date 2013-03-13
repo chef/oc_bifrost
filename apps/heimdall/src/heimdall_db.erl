@@ -22,7 +22,7 @@ create_stmt(container) -> insert_container;
 create_stmt(group)     -> insert_group;
 create_stmt(object)    -> insert_object.
 
--spec create(auth_type(), auth_id()) -> ok | {conflict, term()} | {error, term()}.
+-spec create(entity_type(), auth_id()) -> ok | {conflict, term()} | {error, term()}.
 create(Type, AuthzId) ->
     CreateStatement = create_stmt(Type),
     case sqerl:statement(CreateStatement, [AuthzId], count) of
@@ -39,7 +39,7 @@ delete_stmt(container) -> delete_container_by_authz_id;
 delete_stmt(group)     -> delete_group_by_authz_id;
 delete_stmt(object)    -> delete_object_by_authz_id.
 
--spec delete(auth_type(), auth_id()) -> ok | {error, term()}.
+-spec delete(entity_type(), auth_id()) -> ok | {error, term()}.
 delete(Type, AuthzId) ->
     DeleteStatement = delete_stmt(Type),
     case sqerl:statement(DeleteStatement, [AuthzId], count) of
@@ -54,7 +54,7 @@ exists_query(container) -> container_exists;
 exists_query(group)     -> group_exists;
 exists_query(object)    -> object_exists.
 
--spec exists(auth_type(), auth_id()) -> boolean().
+-spec exists(entity_type(), auth_id()) -> boolean().
 exists(Type, AuthId) ->
     StatementName = exists_query(Type),
     {ok, Answer} = sqerl:select(StatementName, [AuthId], first_as_scalar, [exists]),
@@ -69,7 +69,7 @@ create_ace_stmt(object, group) -> insert_object_acl_group;
 create_ace_stmt(container, actor) -> insert_container_acl_actor;
 create_ace_stmt(container, group) -> insert_container_acl_group.
 
--spec create_ace(auth_type(), auth_id(), auth_type(), auth_id(),
+-spec create_ace(entity_type(), auth_id(), entity_type(), auth_id(),
                  permission()) -> ok | {error, term()}.
 create_ace(TargetType, TargetId, AuthorizeeType, AuthorizeeId, Permission) ->
     CreateStatement = create_ace_stmt(TargetType, AuthorizeeType),
@@ -94,7 +94,7 @@ acl_member_query(group, object) -> groups_in_object_acl;
 acl_member_query(actor, container) -> actors_in_container_acl;
 acl_member_query(group, container) -> groups_in_container_acl.
 
--spec acl_membership(auth_type(), auth_type(), auth_id(), permission()) ->
+-spec acl_membership(entity_type(), entity_type(), auth_id(), permission()) ->
                               list() | {error, term()}.
 acl_membership(TargetType, AuthorizeeType, AuthzId, Permission) ->
     MembershipStatement = acl_member_query(AuthorizeeType, TargetType),
@@ -117,7 +117,7 @@ delete_acl_stmt(group, object)    -> delete_groups_from_object_acl;
 delete_acl_stmt(actor, container)    -> delete_actors_from_container_acl;
 delete_acl_stmt(group, container)    -> delete_groups_from_container_acl.
 
--spec delete_acl(auth_type(), auth_type(), auth_id(), permission()) ->
+-spec delete_acl(entity_type(), entity_type(), auth_id(), permission()) ->
                         ok | {error, term()}.
 delete_acl(AuthorizeeType, TargetType, TargetId, Permission) ->
     DeleteStatement = delete_acl_stmt(AuthorizeeType, TargetType),
@@ -133,7 +133,7 @@ permission_query(group) -> actor_has_permission_on_group;
 permission_query(object) -> actor_has_permission_on_object;
 permission_query(container) -> actor_has_permission_on_container.
 
--spec has_permission(auth_type(), auth_id(), auth_id(), permission()) -> boolean().
+-spec has_permission(entity_type(), auth_id(), auth_id(), permission()) -> boolean().
 has_permission(TargetType, TargetId, RequestorId, Permission) ->
     PermissionStatement = permission_query(TargetType),
     case sqerl:select(PermissionStatement, [RequestorId, TargetId, Permission],
@@ -148,7 +148,7 @@ has_permission(TargetType, TargetId, RequestorId, Permission) ->
 membership_query(actor) -> group_actor_members;
 membership_query(group) -> group_group_members.
 
--spec group_membership(auth_type(), auth_id()) -> list() | {error, term()}.
+-spec group_membership(entity_type(), auth_id()) -> list() | {error, term()}.
 group_membership(TargetType, GroupId) ->
     MembershipStatement = membership_query(TargetType),
     case sqerl:select(MembershipStatement, [GroupId], rows_as_scalars,
@@ -164,7 +164,7 @@ group_membership(TargetType, GroupId) ->
 group_insert_stmt(actor)     -> insert_actor_into_group;
 group_insert_stmt(group)     -> insert_group_into_group.
 
--spec add_to_group(auth_type(), auth_id(), auth_id()) -> ok | {error, term()}.
+-spec add_to_group(entity_type(), auth_id(), auth_id()) -> ok | {error, term()}.
 add_to_group(Type, MemberId, GroupId) ->
     InsertStatement = group_insert_stmt(Type),
     case sqerl:statement(InsertStatement, [MemberId, GroupId], count) of
@@ -180,7 +180,7 @@ add_to_group(Type, MemberId, GroupId) ->
 group_remove_stmt(actor)     -> delete_actor_from_group;
 group_remove_stmt(group)     -> delete_group_from_group.
 
--spec remove_from_group(auth_type(), auth_id(), auth_id()) -> ok | {error, term()}.
+-spec remove_from_group(entity_type(), auth_id(), auth_id()) -> ok | {error, term()}.
 remove_from_group(Type, MemberId, GroupId) ->
     DeleteStatement = group_remove_stmt(Type),
     case sqerl:statement(DeleteStatement, [MemberId, GroupId], count) of

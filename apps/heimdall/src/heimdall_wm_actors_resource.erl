@@ -28,7 +28,7 @@ validate_request(Req, State) ->
 auth_info(_Method) ->
     ignore.
 
-from_json(Req, #base_state{authz_id = AuthzId,
+from_json(Req, #base_state{target_authz_id = AuthzId,
                            requestor_id = RequestorId} = State) ->
     case heimdall_db:create(actor, AuthzId) of
         ok ->
