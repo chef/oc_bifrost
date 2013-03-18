@@ -74,10 +74,10 @@ forbidden(Req, #base_state{reqid = ReqId,
         ignore ->
             {false, Req, State};
         Permission ->
-            case ?SH_TIME(ReqId, heimdall_db, exists, (Type, Id)) of
-                false ->
-                    {{halt, 404}, Req, State};
-                true ->
+            % case ?SH_TIME(ReqId, heimdall_db, exists, (Type, Id)) of
+            %     false ->
+            %         {{halt, 404}, Req, State};
+            %     true ->
                     Result = case Permission of
                                  any ->
                                      heimdall_acl:check_any_access(ReqId, Type, Id, RequestorId);
@@ -90,7 +90,7 @@ forbidden(Req, #base_state{reqid = ReqId,
                         false ->
                             heimdall_wm_error:set_access_exception(Req, State, Permission)
                     end
-            end
+            % end
     end.
 
 create_path(Req, State) ->
