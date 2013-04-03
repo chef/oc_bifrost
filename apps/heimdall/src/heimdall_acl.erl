@@ -14,13 +14,15 @@
 %% @doc Check to see if requestor has permission on a particular target
 -spec check_access(request_id(), auth_type(), auth_id(), requestor_id(), permission()) ->
                           boolean().
+check_access(_ReqId, _TargetType, _TargetId, superuser, _Permission) ->
+    true;
 check_access(ReqId, TargetType, TargetId, RequestorId, Permission) ->
-    case RequestorId of
-        superuser ->
-            true;
-        Id ->
-            ?SH_TIME(ReqId, heimdall_db, has_permission, (TargetType, TargetId, Id,
-                                                          Permission))
+    case ?SH_TIME(ReqId, heimdall_db, has_permission,
+                  (TargetType, TargetId, RequestorId, Permission)) of
+      {error, _Reason} ->
+          false;
+      Answer ->
+          Answer
     end.
 
 %% @doc Update ACL (for given permission type) on target for all actors and groups
