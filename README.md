@@ -26,9 +26,9 @@ following information:
 
 {
     "chef": {
-        "chef_server_url": "https://opsmaster-api.opscode.us/organizations/preprod",
-        "node_name": <YOUR_OPSMASTER_ACCOUNT_NAME>,
-        "client_key": <PATH_TO_YOUR_OPSMASTER_SSH_KEY>
+      "chef_server_url": "https://opsmaster-api.opscode.us/organizations/preprod",
+      "node_name": <YOUR_OPSMASTER_ACCOUNT_NAME>,
+      "client_key": <PATH_TO_YOUR_OPSMASTER_SSH_KEY>
     }
 }
 ```
