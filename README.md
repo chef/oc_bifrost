@@ -54,13 +54,13 @@ The following environmental variable is used for locating local cookbooks
 (however, even if no local cookbooks are used and the variable is empty or
 pointing at an empty directory, it's still required):
 
-export OPSCODE_COOKBOOKS=/path/to/working/cookbooks
+    export OPSCODE_COOKBOOKS=/path/to/working/cookbooks
 
 Also, the following environmental variable must point to all the opscode
 cookbooks being worked on (i.e., oc_bifrost, etc. which are mounted into
 the VM):
 
-export OPSCODE_SRC=/path/to/src/oc/
+    export OPSCODE_SRC=/path/to/src/oc/
 
 Now you're ready to grab all the dependencies.  We're installing
 binary stubs into `bin` to ensure everything is as self-contained as
